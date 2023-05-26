@@ -1,0 +1,87 @@
+SELECT DISTINCT(rideable_type)
+FROM `gcert-project.bike_trip_data.bike_data_202301`
+;
+
+# Count of bike types in 2023-01
+SELECT DISTINCT(rideable_type), COUNT(rideable_type) AS bike_type_count
+FROM bike_trip_data.bike_data_202301 
+GROUP BY rideable_type 
+ORDER BY bike_type_count DESC
+;
+
+# Count of bike types in 202302
+SELECT DISTINCT(rideable_type), COUNT(rideable_type) AS bike_type_count
+FROM `gcert-project.bike_trip_data.bike_data_202302`
+GROUP BY rideable_type
+ORDER BY bike_type_count DESC
+;
+
+
+# Count of bike types in both 01 and 02
+SELECT DISTINCT(AUnion.rideable_type), COUNT(AUnion.rideable_type) AS total_count
+FROM
+(
+  SELECT rideable_type
+  FROM `gcert-project.bike_trip_data.bike_data_202301`
+  UNION ALL
+  SELECT rideable_type
+  FROM `gcert-project.bike_trip_data.bike_data_202302`
+) AUnion
+GROUP BY rideable_type
+ORDER BY total_count DESC
+;
+
+
+ # How many starting stations have they been?
+ SELECT DISTINCT(COUNT(start_station_name)) num_of_stations
+ FROM
+ (
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202301`
+  UNION DISTINCT
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202302`
+ )
+;
+
+
+# Most used starting station using both 2023-01 & 2023-02
+SELECT DISTINCT(AUnion.start_station_name), COUNT(AUnion.start_station_name) AS total_count
+FROM
+(
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202301`
+  UNION ALL
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202302`
+) AUnion
+GROUP BY start_station_name
+ORDER BY total_count DESC
+;
+
+# Least used starting station using both 2023-01 & 2023-02
+SELECT DISTINCT(AUnion.start_station_name), COUNT(AUnion.start_station_name) AS total_count
+FROM
+(
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202301`
+  UNION ALL
+  SELECT start_station_name
+  FROM `gcert-project.bike_trip_data.bike_data_202302`
+) AUnion
+GROUP BY start_station_name
+ORDER BY total_count 
+;
+
+
+SELECT started_at
+FROM `gcert-project.bike_trip_data.bike_data_202301`
+;
+
+
+#extracting weekday names(1=Sun, 7=Sat)
+SELECT EXTRACT(DATE from started_at) AS start_date, 
+EXTRACT(DAYOFWEEK FROM started_at) AS day_of_week,
+FORMAT_DATE('%A', started_at) AS day_name
+FROM `gcert-project.bike_trip_data.bike_data_202301`
+;
